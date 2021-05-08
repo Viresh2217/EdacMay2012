@@ -1,0 +1,11 @@
+import java.util.Scanner;
+class Result{
+public static void main(String args[])
+{int i,j,k;
+	
+	System.out.println("Result is :"-5 + 8 * 6);
+	
+
+}
+
+}
