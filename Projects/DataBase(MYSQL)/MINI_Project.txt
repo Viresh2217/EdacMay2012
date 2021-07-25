@@ -1,0 +1,387 @@
+                                                    MINI PROJECT- Company's projects and Vendors Database Management.
+
+	                                                                                                    Name-Viresh Gavarkar and Vishal Devore
+                                                                                                            Guide - Vipual sir
+
+
+1    create database Honeywell;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+1)DDL- Data Definition Language	
+
+   A) Create table 
+   B) Drop Table
+   C) Alter Table
+
+
+A) Create table-  
+
+create table project(
+project_ID int(5) unique not null,
+project_Name varchar(70) not null,
+Technology varchar(50),
+Start_Date Date ,
+Deadline date,
+Status varchar(50) not null,
+vendor_ID int(4),
+Country_Code int(7),
+primary key(project_id),
+foreign key(vendor_ID) References Vendor(Vendor_Id),
+foreign key(Country_Code) References Country(Country_id)
+);
+
+
+create table Vendor(
+vendor_Id int(4),
+vendor_Name varchar(50),
+Employe int(5),
+primary key(vendor_Id)
+);	
+
+
+create table Country(
+Country_id int(4) unique not null,
+country_Name varchar(30) not null,
+site_survey varchar(30)
+primary key(Country_id )
+);	
+
+
+B) Drop Table-
+
+   Drop table project;
+   Drop table Country;
+   Drop table Vendor;
+
+C) Alter Table-
+             
+       1) ADD Column in table
+          Alter table project
+          ADD new_Projectname varchar(50);
+
+       2)Rename table
+
+         Alter table Project
+         rename Projects;
+
+       3)Changing datatype of column
+
+         Alter table vendor
+         modify Vendor_name varchar(60);
+
+       4)Change column name
+
+         ALter table projects
+         change new_name Dummy varchar(50);
+
+        5) Delete Column name
+
+           Alter table projects
+           drop Column Dummy ;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+2) DML- Data Manipulation Language
+
+        A) Insert 
+        B) Delete
+        C) Update
+
+A) Insert values in table
+
+insert into project(project_ID,Project_Name,Technology,Start_date,DeadLine,Status,Vendor_Id,Country_Code)
+values(1001,"KJO","DCS","2019-01-21","2020-03-19","Compleated",501,911131),
+(1002,"ADNOC","DCS","2020-05-21","2020-08-20","Compleated",502,911131),
+(1003,"ONGC","SM","2020-01-21","2021-03-19","Compleated",503,921233),
+(1004,"Total ECU","DCS","2001-07-21","2003-05-11","Compleated",505,934436),
+(1005,"GCGV","HMI","2020-11-26","2021-08-10","Working",502,911131),
+(1006,"HHGCV","SM","2020-07-20","2021-07-20","Working",501,911131),
+(1007,"HHGCP","DSC","2014-10-28","2016-10-28","Compleated",503,934436),
+(1008,"AJO","SM","2015-01-01","2016-03-24","Compleated",501,911131),
+(1009,"KJO2","SM","2020-06-01","2022-05-22","Working",501,911131),
+(1010,"HCL","HMI","2019-04-01","2019-08-01","Compleated",505,934436);
+
+
+
+insert into vendor(vendor_Id,vendor_Name,Employe)
+values(501,"Virtuoso project Ltd",150),(502,"Sistech project Ltd",100),
+(503,"Bransis project Ltd",50),(504,"Cotmac project Ltd"75),
+(505,"Hydrolic project and Services Ltd",175);
+
+
+insert into country(country_id,Country_Name,Site_Survey)
+values(911131,"United Arab Emirates","Done"),(934436,"INDIA","Done"),
+(921233,"Australia","Done");
+
+B) Delete-
+       
+      -it is used to delete perticular row in existing database.
+
+      Delete from country
+      where country_id=911131;
+    
+C) Update-
+
+    -it is used to change in existing data in table.
+
+    1) Update 
+       update projects 
+       set Vendor_Id=504
+       where project_ID=1001;
+
+    2) update project
+       set Vendor_ID=506
+       where project_ID=1010;
+   
+    3)  Alter table project
+        ADD Duration int;
+
+    4)    update project
+         set duration=To_days(Deadline)-To_days(Start_Date);  
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+select * from Project where project_name like"A%";
+select * from Project where project_name like"%V";
+select * from Project where project_name like "__G%";
+select * from Project where project_name like  "%j%";
+
+
+select substring(project_name,3) as SUbstring from Project;
+select length(Project_Name) from Project;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3) Functions-
+
+A) Aggregate Functions
+B) Date & Time Function
+C) UserDefine Function-
+
+
+  A) Aggregate Functions-
+
+  1) write query will show count of project?(COUNT)
+
+     select count(Project_Name) as Count_of_Project from project
+    
+     select count(employe) from vendor where Employe>100;
+
+  2) write query will show which project is start early of project? (MAX)
+      select max(Start_date) from projects;
+  3) write query will show which project date is too OLD of project?(MIN)
+     select MIN(Start_date) from projects;
+  4) Write a query will show how much employe work upto now?(SUM)
+     select Sum(employe) from Vendor;
+  5) (AVG)
+    select AVG(employe) from Vendor;
+
+  B) Date & Time Function-
+     
+      Date Function-
+        Select Current_Date();
+        select sysdate();
+        select date("2001-07-21");
+        select month("2001-07-21"); 
+  
+   
+  c) User Define Function-
+(this function will return name of project)
+  
+SET GLOBAL log_bin_trust_function_creators = 1;
+     
+delimiter $$ 
+create function get_Name(New_id int)
+returns varchar(70)
+begin
+declare P_name varchar(70) default "";
+select Project_name into P_name from project
+where project_ID=New_id;
+return P_name;
+end $$
+
+use honeywell;
+
+select honeywell.get_Name(1005);
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+JOINS-
+
+A) INNER JOIN
+B) Left Join
+C) Right Join
+D) Cross Join
+E) MUltiple Join Tables
+
+A) Inner Join- In Inner Join we join the two tables based on some equality condition. 
+               Inner join returns only those rows which satisfy matching conditions.
+
+             select * from project p
+             inner join vendor v
+             on p.Vendor_id=v.Vendor_id;
+
+B) Left Outer Join- Left Outer Join- In Left Outer Join we join the two tables based on some equality condition.
+                    Left Outer join returns matching rows and also left over rows from the left table.
+  
+                   select * from project p
+                   Left join vendor v
+                   on p.vendor_id=v.vendor_ID;
+                
+C) Right Outer Join- Right Outer join returns matching rows and also left over rows from the Right table
+
+
+                       select * from project p
+                       Right join vendor v
+                       on p.vendor_id=v.vendor_ID;
+
+D) Cross Join-  Create multiple record using cross join.
+
+                    select * from project
+                    cross join vendor;
+
+E) MUltiple Join Tables-
+                     
+                     select * from project p
+                     inner join vendor v
+                     on p.vendor_id=v.vendor_ID
+                     inner join country c
+                     on p.country_Code=c.country_id;
+          
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Procedure-
+ 
+        A) With Parameter
+        B) Without parameter
+
+
+A) Procedure with parameter- 
+    delimiter //
+create procedure insertData(
+country_id int(4) ,
+country varchar(30) ,
+site_survey varchar(30)
+)
+Begin
+ insert into Country 
+ values(Country_id,Country,site_survey);
+ end; //
+ delimiter ;
+...........................................
+ drop procedure insertData;
+...........................................
+ call insertData(943452,"America","Done");
+
+
+...........................................................
+delimiter //
+create procedure getTechnology(in X varchar(60))
+Begin 
+select * from project where technology=X;
+end; //
+delimiter ;
+
+call getTechnology("DCS");
+
+........................................................
+delimiter //
+create procedure get_days(in X varchar(60))
+Begin 
+select Duration from project
+where project_name=X;
+        
+end; //
+delimiter ;
+
+call get_days("KJO");
+
+
+B) Procedure without parameter-
+
+delimiter //
+create procedure getDetails()
+Begin 
+select project.project_Id,p.Project_Name,p.Technology,p.status,v.vendor_name,c.Country_name
+from project p
+inner join vendor v
+on p.vendor_id=v.vendor_id
+inner join country c
+on p.country_Code=c.country_id;
+end; //
+delimiter ;
+
+...........................................
+drop procedure getDetails;
+...........................................
+call  getDetails();	
+    
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Trigger-
+
+
+use honeywell;
+delimiter //
+create trigger before_user_delete before delete
+on project for each row
+begin 
+insert into user_log(project_Id,project_name,Technology,start_date,Deadline,status,
+vendor_id,Country_code)
+values(old.project_Id,old.project_name,old.Technology,old.start_date,old.Deadline,old.status,
+old.vendor_id,old.Country_code);
+end //
+delimiter ;
+
+select * from user_log;
+
+delete from project where project_Id=1008;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+cursor-
+
+
+delimiter //
+create procedure Working_Data()
+begin
+declare a int;
+declare b varchar(70);
+declare c varchar(50);
+declare d date;
+declare e date;
+declare f varchar(50);
+declare g int;
+declare h int;
+declare i int;
+declare x int default 1;
+declare c1 cursor for select * from project;
+open c1;
+while x<7 do
+fetch c1 into a,b,c,d,e,f,g,h,i;
+if f="working" then 
+insert into Status_report values(a,b,c);
+end if;
+set x =x+1;
+end while;
+close c1;
+end; //
+delimiter //
+
+call Working_data();
+
+create table Status_report(
+project_id int,
+Pname varchar(50),
+tech varchar(50)
+);
+
+
+drop procedure Working_data;
+
+
+select * from status_report;
+
+truncate status_report;
+
+vipultembulwar@gmail.com
+
+
+
+
